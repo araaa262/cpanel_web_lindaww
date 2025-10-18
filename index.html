@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login Panel lindaw🌷</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #000;
+      color: #fff;
+    }
+
+    .login-box {
+      background: #111;
+      padding: 2.5rem 2rem;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 0 0 1px #333, 0 10px 30px rgba(0,0,0,.6);
+    }
+
+    h2 {
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      color: #fff;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 14px;
+      margin: 10px 0;
+      border: 1px solid #333;
+      border-radius: 8px;
+      outline: none;
+      background: #000;
+      color: #fff;
+      transition: border-color .25s;
+    }
+
+    input:focus {
+      border-color: #fff;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 8px;
+      background: #fff;
+      color: #000;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .25s, color .25s;
+    }
+
+    button:hover {
+      background: #e5e5e5;
+    }
+
+    .loading {
+      display: none;
+      margin-top: 10px;
+      animation: pulse 1s infinite;
+      color: #888;
+      font-size: .9rem;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: .4; }
+      50% { opacity: 1; }
+    }
+
+    #errorBox {
+      display: none;
+      margin-top: 10px;
+      padding: 10px;
+      background: rgba(255, 0, 0, 0.08);
+      border-radius: 6px;
+      color: #ff5555;
+      font-size: 0.9rem;
+    }
+
+    .admin-link {
+      margin-top: 1.2rem;
+      font-size: 0.85rem;
+      color: #888;
+    }
+
+    .admin-link a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .admin-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <h2>Login Panel</h2>
+    <form id="loginForm">
+      <input type="text" id="username" placeholder="Username" required />
+      <input type="password" id="password" placeholder="Password" required />
+      <button type="submit">Masuk</button>
+      <div class="loading">⏳ Sedang memeriksa...</div>
+      <div id="errorBox"></div>
+    </form>
+    <div class="admin-link">
+      Anda admin? <a href="/admin/">Klik disini</a>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById("loginForm");
+    const loading = document.querySelector(".loading");
+    const errorBox = document.getElementById("errorBox");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      errorBox.style.display = "none";
+      loading.style.display = "block";
+
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      try {
+        const res = await fetch("/api/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password }),
+        });
+
+        const clone = res.clone();
+        let data;
+        try {
+          data = await res.json();
+        } catch {
+          const text = await clone.text();
+          throw new Error(`Server tidak mengembalikan JSON valid: ${text}`);
+        }
+
+        if (res.ok && data.success) {
+          localStorage.setItem("username", username);
+          window.location.href = "/user/reseller/index.html";
+        } else {
+          errorBox.textContent = data.message || "Username atau password salah.";
+          errorBox.style.display = "block";
+        }
+      } catch (err) {
+        errorBox.textContent = "Terjadi kesalahan: " + err.message;
+        errorBox.style.display = "block";
+      } finally {
+        loading.style.display = "none";
+      }
+    });
+  </script>
+</body>
+</html>
