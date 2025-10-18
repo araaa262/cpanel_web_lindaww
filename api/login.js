@@ -15,7 +15,7 @@ export default async function handler(req, res) {
 
   try {
     // 📄 Ambil lokasi file users.json di root project
-    const filePath = path.join(process.cwd(), "users.json");
+    const filePath = path.join(process.cwd(), "user.json");
 
     if (!fs.existsSync(filePath)) {
       return res.status(404).json({ success: false, message: "File users.json tidak ditemukan." });
