@@ -11,7 +11,7 @@
     "bcryptjs": "^2.4.3"
   },
   "engines": {
-    "node": ">=20"
+    "node": "20"
   },
   "keywords": [
     "vercel",
