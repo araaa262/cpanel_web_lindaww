@@ -12,7 +12,7 @@ export default function handler(req, res) {
 
   try {
     // 🔥 Path absolut ke users.json
-    const filePath = path.join(process.cwd(), "users.json");
+    const filePath = path.join(process.cwd(), "user.json");
     const data = fs.readFileSync(filePath, "utf8");
     const users = JSON.parse(data);
     return res.status(200).json({ users });
